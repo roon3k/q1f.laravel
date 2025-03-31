@@ -20,6 +20,9 @@ Route::middleware([AdminApiKeyAuth::class])->group(function () {
 
 // Маршруты аутентификации для обычных пользователей
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
+Route::post('/reset-password', [AuthController::class, 'resetPassword']);
 
 // Защищенные маршруты для авторизованных пользователей
 Route::middleware(ApiAuthenticate::class)->group(function () {
@@ -27,6 +30,9 @@ Route::middleware(ApiAuthenticate::class)->group(function () {
         return $request->user();
     });
     Route::post('/logout', [AuthController::class, 'logout']);
+    Route::post('/refresh-token', [AuthController::class, 'refreshToken']);
+    Route::put('/update-profile', [AuthController::class, 'updateProfile']);
+    Route::post('/change-password', [AuthController::class, 'changePassword']);
 });
 
 // Маршрут для деплоя
