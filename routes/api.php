@@ -7,6 +7,7 @@ use App\Http\Controllers\DeployController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\ApiAuthenticate;
 use App\Http\Middleware\AdminApiKeyAuth;
+use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
 
 // Маршруты, требующие API ключ администратора
 Route::middleware([AdminApiKeyAuth::class])->group(function () {
@@ -24,8 +25,8 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
 Route::post('/reset-password', [AuthController::class, 'resetPassword']);
 
-// Защищенные маршруты для авторизованных пользователей
-Route::middleware(ApiAuthenticate::class)->group(function () {
+// Защищенные маршруты для авторизованных пользователей с Sanctum
+Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/user', function (Request $request) {
         return $request->user();
     });

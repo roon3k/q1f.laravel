@@ -47,13 +47,17 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
-        if (!Auth::attempt($request->only('email', 'password'))) {
+        // Найти пользователя по email
+        $user = User::where('email', $request->email)->first();
+        
+        // Проверить существование пользователя и правильность пароля
+        if (!$user || !Hash::check($request->password, $user->password)) {
             throw ValidationException::withMessages([
                 'email' => ['The provided credentials are incorrect.'],
             ]);
         }
 
-        $user = User::where('email', $request->email)->firstOrFail();
+        // Создаем новый токен для пользователя
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
