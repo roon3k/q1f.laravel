@@ -5,28 +5,29 @@ namespace App\Http\Middleware;
 use Closure;
 use App\Models\ApiToken;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class AdminApiKeyAuth
 {
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next): Response
     {
-        $apiKey = $request->header('X-API-Key');
+        $bearerToken = $request->bearerToken();
         
-        if (!$apiKey) {
-            return response()->json(['message' => 'API key is required'], 401);
+        if (!$bearerToken) {
+            return response()->json(['message' => 'API token is required'], 401);
         }
 
-        $token = ApiToken::where('token', $apiKey)->first();
+        $token = ApiToken::where('token', $bearerToken)->first();
         
         if (!$token) {
-            return response()->json(['message' => 'Invalid API key'], 401);
+            return response()->json(['message' => 'Invalid API token'], 401);
         }
 
         if ($token->expires_at && $token->expires_at->isPast()) {
-            return response()->json(['message' => 'API key has expired'], 401);
+            return response()->json(['message' => 'API token has expired'], 401);
         }
 
-        if (!$token->user->is_admin) {
+        if (!$token->user || !$token->user->is_admin) {
             return response()->json(['message' => 'Unauthorized. Admin access required'], 403);
         }
 
