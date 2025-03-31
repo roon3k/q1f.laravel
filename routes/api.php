@@ -9,7 +9,7 @@ use App\Http\Middleware\ApiAuthenticate;
 use App\Http\Middleware\AdminApiKeyAuth;
 
 // Маршруты, требующие API ключ администратора
-Route::middleware('admin.api')->group(function () {
+Route::middleware([AdminApiKeyAuth::class])->group(function () {
     // Управление пользователями
     Route::post('/users', [UserController::class, 'store']);
     Route::get('/users', [UserController::class, 'index']);
