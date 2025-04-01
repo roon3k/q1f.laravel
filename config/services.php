@@ -35,4 +35,10 @@ return [
         ],
     ],
 
+    'tatum' => [
+        'api_key' => env('TATUM_API_KEY'),
+        'base_url' => env('TATUM_BASE_URL', 'https://api.tatum.io/v3'),
+        'usdt_contract_address' => env('TATUM_USDT_CONTRACT_ADDRESS', 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t'), // TRC20 USDT contract address
+    ],
+
 ];
